@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SVGProps, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 
 interface IFormInput {
   username: string;
@@ -12,40 +13,35 @@ interface IFormInput {
 }
 
 export default function Form() {
+  const { data: session } = useSession();
   const router = useRouter();
+
+  if (session) {
+    router.push("/admin/dashboard");
+  }
 
   const {
     register,
     handleSubmit,
     setError,
+    clearErrors,
     formState: { errors },
   } = useForm<IFormInput>({});
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/submit", {
-        method: "POST",
-        body: JSON.stringify(formData),
+      await signIn("credentials", {
+        ...formData,
+        redirect: true,
+        callbackUrl: "/admin/dashboard",
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError("root.serverError", {
-          type: "400",
-          message: data.message ?? "Data submission failed.",
-        });
-      }
-
-      router.push("/admin/dashboard");
     } catch (error) {
       setError("root.serverError", {
         type: "400",
-        message: "Data submission failed.",
+        message: "Invalid Credentials",
       });
     } finally {
       setIsLoading(false);
@@ -71,7 +67,12 @@ export default function Form() {
               type="text"
               placeholder="Username"
               className="pr-12"
-              {...register("username", { required: true })}
+              {...register("username", {
+                required: true,
+                onChange: () => {
+                  clearErrors("root");
+                },
+              })}
             />
 
             <div className="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -94,7 +95,12 @@ export default function Form() {
               type="password"
               placeholder="Password"
               className="pr-12"
-              {...register("password", { required: true })}
+              {...register("password", {
+                required: true,
+                onChange: () => {
+                  clearErrors("root");
+                },
+              })}
             />
 
             <div className="absolute inset-y-0 right-0 flex items-center pr-3">
