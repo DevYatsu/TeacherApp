@@ -14,7 +14,7 @@ export function LogoutPage() {
   }
 
   return (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8 bg-gradient-to-t from-[#aac9eb] to-[#e795d1]">
       <Card className="mx-auto max-w-sm">
         <CardContent className="flex flex-col items-center justify-center gap-6 p-8">
           <LogOutIcon className="h-12 w-12 text-primary" />
