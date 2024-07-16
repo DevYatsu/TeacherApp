@@ -1,8 +1,18 @@
+"use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { SVGProps } from "react";
 import LogoutButton from "./LogoutButton";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export function LogoutPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  if (!session) {
+    router.push("/admin/login");
+  }
+
   return (
     <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <Card className="mx-auto max-w-sm">

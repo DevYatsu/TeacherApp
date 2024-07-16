@@ -6,6 +6,7 @@ import { SVGProps, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 interface IFormInput {
   username: string;
@@ -29,6 +30,12 @@ export default function Form() {
   } = useForm<IFormInput>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const searchParams = useSearchParams();
+  const [invalidError, saveInvalidError] = useLocalStorage(
+    "showInputInvalidError",
+    true
+  );
+
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
     setIsLoading(true);
 
@@ -45,6 +52,7 @@ export default function Form() {
       });
     } finally {
       setIsLoading(false);
+      saveInvalidError(true);
     }
   };
 
@@ -54,6 +62,9 @@ export default function Form() {
         <h1 className="text-3xl font-bold">Welcome Back</h1>
         <p className="text-muted-foreground">Teacher, enter your credentials</p>
         <p className="text-red-500">
+          {searchParams.get("error") && invalidError && (
+            <span>Invalid Credentials</span>
+          )}
           {errors.root && <span>{errors.root["serverError"].message}</span>}
         </p>
       </div>
@@ -71,6 +82,7 @@ export default function Form() {
                 required: true,
                 onChange: () => {
                   clearErrors("root");
+                  saveInvalidError(false);
                 },
               })}
             />
@@ -99,6 +111,7 @@ export default function Form() {
                 required: true,
                 onChange: () => {
                   clearErrors("root");
+                  saveInvalidError(false);
                 },
               })}
             />
