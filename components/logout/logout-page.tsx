@@ -4,6 +4,7 @@ import { SVGProps } from "react";
 import LogoutButton from "./LogoutButton";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function LogoutPage() {
   const { data: session } = useSession();
@@ -25,6 +26,13 @@ export function LogoutPage() {
             </p>
           </div>
           <LogoutButton />
+          <Link
+            href="/admin/dashboard"
+            className="text-center text-sm underline"
+            prefetch={true}
+          >
+            Go back to dashboard
+          </Link>
         </CardContent>
       </Card>
     </div>
