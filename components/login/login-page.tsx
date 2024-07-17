@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import LoginForm from "./LoginForm";
 
 export function LoginPage() {
@@ -7,7 +8,9 @@ export function LoginPage() {
         <div className="absolute inset-0 bg-[url('/waves.svg')] bg-cover bg-center bg-no-repeat animate-wave" />
       </div>
       <div className="relative z-10 w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
-        <LoginForm />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );

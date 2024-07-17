@@ -1,108 +1,7 @@
 import Link from "next/link";
 import { SVGProps } from "react";
 
-export function CustomClassPage({ classroomName }: { classroomName: string }) {
-  return (
-    <div className="flex flex-col min-h-[100dvh]">
-      <header className="bg-primary py-4 shadow flex justify-center">
-        <div className="container flex items-center justify-around">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-primary-foreground"
-            prefetch={true}
-          >
-            <HomeIcon className="h-6 w-6" />
-            <span className="text-lg font-medium">Home</span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-4">
-            <Link
-              href="/shared"
-              className="text-primary-foreground hover:underline"
-              prefetch={false}
-            >
-              Shared Files
-            </Link>
-          </nav>
-        </div>
-      </header>
-      <section className="flex bg-primary py-8 md:py-12 lg:py-16 justify-center">
-        <div className="container flex flex-col items-center justify-center space-y-4 text-center">
-          <h1 className="text-2xl font-bold tracking-tighter text-primary-foreground sm:text-3xl md:text-4xl lg:text-5xl">
-            {classroomName}
-          </h1>
-          <p className="max-w-[600px] text-primary-foreground md:text-lg">
-            Browse and download the files studied during the year in the{" "}
-            {classroomName}!
-          </p>
-        </div>
-      </section>
-      <section
-        id="files"
-        className="py-12 md:py-16 lg:py-24 flex justify-center"
-      >
-        <div className="container grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <FileDisplay
-            fullName="Example File.pdf"
-            extension="PDF"
-            sizeWithUnit="2.3 MB"
-          />{" "}
-          <FileDisplay
-            fullName="Another File.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-          />
-          <FileDisplay
-            fullName="Presentation.pptx"
-            extension="PPTX"
-            sizeWithUnit="4.2 MB"
-          />
-          <FileDisplay
-            fullName="Image.jpg"
-            extension="JPG"
-            sizeWithUnit="1.2 MB"
-          />{" "}
-          <FileDisplay
-            fullName="Data.csv"
-            extension="CSV"
-            sizeWithUnit="500 KB"
-          />
-          <FileDisplay
-            fullName="Report.txt"
-            extension="TXT"
-            sizeWithUnit="3.1 MB"
-          />{" "}
-          <FileDisplay
-            fullName="Spreadsheet.xlsx"
-            extension="XLSX"
-            sizeWithUnit="2.7 MB"
-          />
-          <FileDisplay
-            fullName="Audio.mp3"
-            extension="MP3"
-            sizeWithUnit="8.2 MB"
-          />{" "}
-          <FileDisplay
-            fullName="Video.mp4"
-            extension="MP4"
-            sizeWithUnit="45.3 MB"
-          />{" "}
-          <FileDisplay
-            fullName="Text.json"
-            extension="JSON"
-            sizeWithUnit="5 KB"
-          />
-          <FileDisplay
-            fullName="archive.zip"
-            extension="ZIP"
-            sizeWithUnit="5 KB"
-          />
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function FileDisplay({
+export default function FileDisplay({
   fullName,
   extension,
   sizeWithUnit,
@@ -159,12 +58,12 @@ function FileDisplay({
   return (
     <div className="group rounded-lg border bg-background p-4 transition-all hover:shadow-lg">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 pr-2">
           {(iconsList as Record<string, any>)[extension.toLowerCase()] ??
             iconsList["default"]}
           <div>
             <p className="text-sm font-medium">{fullName}</p>
-            <p className="text-xs text-secondary-foreground">
+            <p className="text-xs text-secondary-foreground select-none">
               {extension.toUpperCase()}, {sizeWithUnit}
             </p>
           </div>
@@ -450,26 +349,6 @@ function FileSpreadsheetIcon(props?: SVGProps<SVGSVGElement>) {
       <path d="M14 13h2" />
       <path d="M8 17h2" />
       <path d="M14 17h2" />
-    </svg>
-  );
-}
-
-function HomeIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-      <polyline points="9 22 9 12 15 12 15 22" />
     </svg>
   );
 }
