@@ -2,6 +2,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import LogoutLink from "./LogoutLink";
 import ClassesSection from "./ClassesSection";
+import TeacherAvatar from "./TeacherAvatar";
 
 export function DashBoardPage() {
   return (
@@ -9,14 +10,7 @@ export function DashBoardPage() {
       <header className="flex justify-center h-16 border-b bg-card shadow-sm sm:px-6">
         <div className="flex items-center container">
           <div className="flex items-center gap-2 sm:gap-4 px-4 sm:px-0">
-            <Avatar className="border">
-              <AvatarImage src="/placeholder-user.jpg" alt="AvatarImage" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-            <div className="grid gap-0.5">
-              <div className="font-medium text-sm sm:text-lg">John Doe</div>
-              <div className="text-sm text-muted-foreground">Teacher</div>
-            </div>
+            <TeacherAvatar />
           </div>
           <nav className="ml-auto flex items-center gap-4">
             <Link

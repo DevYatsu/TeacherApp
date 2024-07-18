@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SVGProps, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 

@@ -12,5 +12,5 @@ export const login: LoginFn = async (username, password) => {
   }
 
   // retrieve other data related to user if necessary
-  return { username, id: uuidv4() };
+  return { name: username, id: uuidv4() };
 };
