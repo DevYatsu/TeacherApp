@@ -1,8 +1,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import LogoutLink from "./LogoutLink";
+import ClassesSection from "./ClassesSection";
 
 export function DashBoardPage() {
   return (
@@ -39,45 +38,8 @@ export function DashBoardPage() {
         </div>
       </header>
       <main className="flex-1 flex justify-center p-4 sm:pt-8 sm:p-6 bg-background">
-        <div className="container">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <ClassCard title="Math 101" />
-            <ClassCard title="Biology 301" />
-
-            <ClassCard title="History 401" />
-            <ClassCard title="Chemistry 501" />
-            <ClassCard title="Physics 601" />
-          </div>
-          <div className="mt-8 flex justify-end">
-            <Button>Create New Class</Button>
-          </div>
-        </div>
+        <ClassesSection />
       </main>
     </div>
-  );
-}
-
-function ClassCard({
-  title,
-  studentsNumber,
-}: {
-  title: string;
-  studentsNumber?: number;
-}) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-2">
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">Students</span>
-          <span>{studentsNumber ?? "-"}</span>
-        </div>
-        <Link href="#" className="text-primary" prefetch={false}>
-          Class documents
-        </Link>
-      </CardContent>
-    </Card>
   );
 }

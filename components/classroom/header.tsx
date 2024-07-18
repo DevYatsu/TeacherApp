@@ -9,6 +9,8 @@ export default function ClassRoomHeader() {
   if (index !== -1) {
     classroomName = pathname.slice(0, index);
   }
+
+  classroomName = decodeURI(classroomName);
   return (
     <section className="flex bg-primary py-8 md:py-12 lg:py-16 justify-center">
       <div className="container flex flex-col items-center justify-center space-y-4 text-center">
