@@ -1,16 +1,19 @@
 require("dotenv").config();
 import { google } from "googleapis";
 
-export async function getAuthClient(scopes: string[]) {
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.CLIENT_ID,
-    process.env.CLIENT_SECRET,
-    process.env.REDIRECT_URL
-  );
+const SCOPES = {
+  // recommanded + non-sensitive
+  EDIT_OR_MODIFY_FILES: "https://www.googleapis.com/auth/drive.file",
 
-  google.options({
-    auth: oauth2Client,
-  });
+  // restricted
+  FULL_PERMS: "https://www.googleapis.com/auth/drive",
+  READ_ONLY: "https://www.googleapis.com/auth/drive.readonly",
+  METADATA_ONLY: "https://www.googleapis.com/auth/drive.metadata.readonly",
+};
 
-  return oauth2Client;
-}
+export const auth = new google.auth.GoogleAuth({
+  keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+  scopes: [SCOPES.EDIT_OR_MODIFY_FILES],
+});
+
+export const getDrive = async () => google.drive({ auth, version: "v3" });

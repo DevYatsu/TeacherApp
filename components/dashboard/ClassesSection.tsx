@@ -1,40 +1,30 @@
-"use client";
-
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { getAllFolders, getBasicFolderData } from "@/lib/google-drive/folder";
 import Link from "next/link";
-import CreateClassModal from "./CreateClassModal";
-import { useState } from "react";
+import CreateClassroomButton from "./CreateClassroomButton";
+import { RefAttributes } from "react";
 
-export default function ClassesSection() {
-  const [openModal, setOpenModal] = useState(false);
-
-  // fetch les classrooms
-  const classrooms: { title: string; studentsNumber?: number }[] = [
-    { title: "Math 101" },
-    { title: "Math 09" },
-    { title: "Math 1", studentsNumber: 30 },
-
-    { title: "Math 3" },
-  ];
+export default async function ClassesSection() {
+  const folders = await getAllFolders();
+  const foldersData = getBasicFolderData(folders);
 
   return (
     <div className="container">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {classrooms.map((room) => {
+        {foldersData.map((classroom) => {
           return (
             <ClassCard
-              title={room.title}
-              studentsNumber={room.studentsNumber}
-              key={room.title}
+              title={classroom.name}
+              studentsNumber={classroom.studentsNumber}
+              key={classroom.id}
+              data-folder-id={classroom.id}
             />
           );
         })}
       </div>
 
       <div className="mt-12 flex justify-center">
-        <CreateClassModal open={openModal} setIsOpen={setOpenModal} />
-        <Button onClick={() => setOpenModal(true)}>Create New Classroom</Button>
+        <CreateClassroomButton />
       </div>
     </div>
   );
@@ -43,12 +33,13 @@ export default function ClassesSection() {
 function ClassCard({
   title,
   studentsNumber,
+  ...props
 }: {
   title: string;
   studentsNumber?: number;
-}) {
+} & RefAttributes<HTMLDivElement>) {
   return (
-    <Card>
+    <Card {...props}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>

@@ -13,13 +13,25 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 type ClassroomFormInputs = {
   name: string;
   studentsNumber?: number;
 };
 
-export default function CreateClassModal({
+export default function CreateClassroomButton() {
+  const [openModal, setOpenModal] = useState(false);
+
+  return (
+    <>
+      <CreateClassModal open={openModal} setIsOpen={setOpenModal} />
+      <Button onClick={() => setOpenModal(true)}>Create New Classroom</Button>
+    </>
+  );
+}
+
+function CreateClassModal({
   open,
   setIsOpen,
 }: {
@@ -35,20 +47,20 @@ export default function CreateClassModal({
   } = useForm<ClassroomFormInputs>({});
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<ClassroomFormInputs> = async (data) => {
     setIsLoading(true);
     // send request with data to backend and then to gg drive
 
-    console.log(data.studentsNumber);
     try {
+      data.name = data.name.trim();
+
       const response = await fetch("/api/classes", {
         method: "POST",
         body: JSON.stringify(data),
       });
       const result = await response.text();
-
-      console.log(result);
 
       if (!response.ok) {
         setError("root.serverError", {
@@ -57,6 +69,7 @@ export default function CreateClassModal({
         });
       } else {
         setIsOpen(false);
+        router.refresh();
       }
     } catch (error) {
       setError("root.serverError", {
