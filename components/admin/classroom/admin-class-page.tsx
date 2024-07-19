@@ -42,7 +42,7 @@ export default async function AdminClassPage({
             <Link
               href={"/classroom/" + classroomId}
               className="text-primary-foreground hover:underline"
-              prefetch={false}
+              prefetch={true}
               target="_blank"
             >
               Student&apos;s Page
