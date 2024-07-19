@@ -13,7 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 type ClassroomFormInputs = {
   name: string;
@@ -47,7 +47,6 @@ function CreateClassModal({
   } = useForm<ClassroomFormInputs>({});
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router = useRouter();
 
   const onSubmit: SubmitHandler<ClassroomFormInputs> = async (data) => {
     setIsLoading(true);
@@ -69,7 +68,7 @@ function CreateClassModal({
         });
       } else {
         setIsOpen(false);
-        router.refresh();
+        revalidatePath("/admin/dashboard");
       }
     } catch (error) {
       setError("root.serverError", {
