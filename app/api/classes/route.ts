@@ -1,5 +1,6 @@
 import { getAllFiles } from "@/lib/google-drive/files";
 import { createFolder } from "@/lib/google-drive/folder";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {};
@@ -17,6 +18,7 @@ export const POST = async (request: Request) => {
     console.log(folderId);
 
     if (folderId) {
+      revalidatePath("/admin/dashboard");
       return NextResponse.json({ folderId });
     }
   }
