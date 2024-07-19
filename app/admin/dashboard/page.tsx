@@ -1,4 +1,4 @@
-import { DashBoardPage } from "@/components/dashboard/dash-board-page";
+import { DashBoardPage } from "@/components/admin/dashboard/dash-board-page";
 import { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {

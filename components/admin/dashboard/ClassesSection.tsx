@@ -1,11 +1,14 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { getAllFolders, getBasicFolderData } from "@/lib/google-drive/folder";
+import {
+  getAllFoldersNotInAnotherDir,
+  getBasicFolderData,
+} from "@/lib/google-drive/folder";
 import Link from "next/link";
 import CreateClassroomButton from "./CreateClassroomButton";
 import { RefAttributes } from "react";
 
 export default async function ClassesSection() {
-  const folders = await getAllFolders();
+  const folders = await getAllFoldersNotInAnotherDir();
   const foldersData = getBasicFolderData(folders);
 
   return (
@@ -18,6 +21,7 @@ export default async function ClassesSection() {
               studentsNumber={classroom.studentsNumber}
               key={classroom.id}
               data-folder-id={classroom.id}
+              folderId={classroom.id}
             />
           );
         })}
@@ -33,10 +37,12 @@ export default async function ClassesSection() {
 function ClassCard({
   title,
   studentsNumber,
+  folderId,
   ...props
 }: {
   title: string;
   studentsNumber?: number;
+  folderId: string;
 } & RefAttributes<HTMLDivElement>) {
   return (
     <Card {...props}>
@@ -46,9 +52,13 @@ function ClassCard({
       <CardContent className="grid gap-2">
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">Students</span>
-          <span>{studentsNumber ?? "-"}</span>
+          <span>{studentsNumber ? studentsNumber ?? "-" : "-"}</span>
         </div>
-        <Link href={`/${title}`} className="text-primary" prefetch={false}>
+        <Link
+          href={`/admin/classroom/${folderId}`}
+          className="text-primary"
+          prefetch={false}
+        >
           Class documents
         </Link>
       </CardContent>

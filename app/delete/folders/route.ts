@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 // PROTECTED BY AUTH MIDDLEWARE
 
 export const GET = async (_request: Request) => {
+  revalidatePath("/admin/dashboard");
   await deleteAllFolders();
   await new Promise((resolve) => setTimeout(() => resolve(null), 1000));
-  revalidatePath("/admin/dashboard");
   redirect("/admin/dashboard");
 };

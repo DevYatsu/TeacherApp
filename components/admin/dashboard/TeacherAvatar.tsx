@@ -1,6 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function TeacherAvatar() {
   const { data: session } = useSession();

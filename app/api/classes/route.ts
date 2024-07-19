@@ -15,8 +15,6 @@ export const POST = async (request: Request) => {
 
     const folderId = await createFolder(folderName);
 
-    console.log(folderId);
-
     if (folderId) {
       revalidatePath("/admin/dashboard");
       return NextResponse.json({ folderId });

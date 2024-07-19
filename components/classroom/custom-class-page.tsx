@@ -1,10 +1,22 @@
-import Link from "next/link";
 import { Suspense, SVGProps } from "react";
+import { notFound } from "next/navigation";
+import { getFolderMetadata } from "@/lib/google-drive/folder";
+import Link from "next/link";
 import ClassRoomHeader from "./header";
 import Chapter from "./chapter";
 import FileDisplay from "./fileDisplay";
 
-export function CustomClassPage() {
+export default async function CustomClassPage({
+  classroomId,
+}: {
+  classroomId: string;
+}) {
+  const folderData = await getFolderMetadata(classroomId);
+
+  if (!folderData) {
+    return notFound();
+  }
+
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <header className="bg-primary py-4 shadow flex justify-center">
@@ -29,7 +41,7 @@ export function CustomClassPage() {
         </div>
       </header>
       <Suspense>
-        <ClassRoomHeader />
+        <ClassRoomHeader classroomName={folderData.name!} />
       </Suspense>
       <main className="flex flex-col items-center space-y-12 py-6 lg:py-10 xl:py-12 px-4 lg:px-8">
         <Chapter title="Chapter 1: Introduction to Computers">

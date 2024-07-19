@@ -1,4 +1,3 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import LogoutLink from "./LogoutLink";
 import ClassesSection from "./ClassesSection";

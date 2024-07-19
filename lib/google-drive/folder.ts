@@ -32,6 +32,59 @@ export const getAllFolders = async () => {
   return files;
 };
 
+export const getFolderMetadata = async (folderId: string) => {
+  const drive = await getDrive();
+
+  if (!folderId) {
+    return;
+  }
+
+  try {
+    const { data } = await drive.files.get({ fileId: folderId });
+
+    console.log(data);
+
+    if (data.mimeType !== "application/vnd.google-apps.folder") {
+      throw Error(`No folder exists with id ${folderId}`);
+    }
+
+    return data;
+  } catch (error: any) {
+    return;
+  }
+};
+
+export const getAllFoldersNotInAnotherDir = async () => {
+  const drive = await getDrive();
+  const entities = await drive.files.list();
+  const files = (entities.data.files ?? []).filter(
+    (entity) =>
+      entity.mimeType === "application/vnd.google-apps.folder" &&
+      !entity.driveId
+  );
+
+  return files;
+};
+
+export const getNameAndStudentsNumberFromFolderName = (folderName: string) => {
+  let name = folderName;
+  const parts = name.split(" - ");
+
+  if (parts.length === 1) {
+    return { name, studentsNumber: 0 };
+  }
+
+  const stringNumber = parts.pop()?.trim();
+  const studentsNumber = parseInt(stringNumber!);
+
+  if (isNaN(studentsNumber)) {
+    return { name, studentsNumber: 0 };
+  }
+
+  name = parts.join(" - ").trim();
+  return { name, studentsNumber };
+};
+
 export const getBasicFolderData = (folders: drive_v3.Schema$File[]) => {
   return folders
     .filter((f) => {
@@ -42,21 +95,10 @@ export const getBasicFolderData = (folders: drive_v3.Schema$File[]) => {
     })
     .map((f) => {
       const id = f.id!;
-      let name = f.name!;
-      const parts = f.name!.split("-");
+      const { name, studentsNumber } = getNameAndStudentsNumberFromFolderName(
+        f.name!
+      );
 
-      if (parts.length === 1) {
-        return { id, name, studentsNumber: 0 };
-      }
-
-      const stringNumber = parts.pop()?.trim();
-      const studentsNumber = parseInt(stringNumber!);
-
-      if (isNaN(studentsNumber)) {
-        return { id, name, studentsNumber: 0 };
-      }
-
-      name = parts.join("-").trim();
       return { name, id, studentsNumber };
     });
 };

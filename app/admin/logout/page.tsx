@@ -1,4 +1,4 @@
-import { LogoutPage } from "@/components/logout/logout-page";
+import { LogoutPage } from "@/components/admin/logout/logout-page";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
