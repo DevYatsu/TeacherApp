@@ -105,7 +105,7 @@ function CreateClassModal({
         </DialogHeader>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          id="modal-form"
+          id="create-classroom-form"
           className="grid gap-4 py-4"
         >
           <div className="grid items-center grid-cols-4 gap-4">
@@ -140,7 +140,11 @@ function CreateClassModal({
           </div>
         </form>
         <DialogFooter>
-          <Button type="submit" form="modal-form" disabled={isLoading}>
+          <Button
+            type="submit"
+            form="create-classroom-form"
+            disabled={isLoading}
+          >
             {isLoading ? "Loading..." : "Create Classroom"}
           </Button>
         </DialogFooter>

@@ -1,3 +1,4 @@
+import { DeleteIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { SVGProps } from "react";
 
@@ -5,10 +6,16 @@ export default function FileDisplay({
   fullName,
   extension,
   sizeWithUnit,
+  fileId,
+  addDeleteLink,
+  addDownloadLink,
 }: {
   fullName: string;
   extension: string;
-  sizeWithUnit: string;
+  sizeWithUnit?: string;
+  fileId: string;
+  addDownloadLink?: boolean;
+  addDeleteLink?: boolean;
 }) {
   // icons found one svgrepo.com or directly from v0
   const iconsList = {
@@ -56,7 +63,10 @@ export default function FileDisplay({
   };
 
   return (
-    <div className="group rounded-lg border bg-background p-4 transition-all hover:shadow-lg">
+    <div
+      className="group rounded-lg border bg-background p-4 transition-all"
+      data-file-id={fileId}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 pr-2">
           {(iconsList as Record<string, any>)[extension.toLowerCase()] ??
@@ -64,17 +74,35 @@ export default function FileDisplay({
           <div>
             <p className="text-sm font-medium">{fullName}</p>
             <p className="text-xs text-secondary-foreground select-none">
-              {extension.toUpperCase()}, {sizeWithUnit}
+              {extension.toUpperCase()}{" "}
+              {sizeWithUnit ? ", " + sizeWithUnit : ""}
             </p>
           </div>
         </div>
-        <Link
-          href="#"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 group-hover:bg-accent group-hover:text-accent-foreground"
-          prefetch={false}
-        >
-          <DownloadIcon className="h-4 w-4" />
-        </Link>
+        <div className="space-x-4">
+          {addDownloadLink ? (
+            <Link
+              href={"/files/download/" + fileId}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 group-hover:bg-accent group-hover:text-accent-foreground"
+              prefetch={false}
+            >
+              <DownloadIcon className="h-4 w-4 text-black" />
+            </Link>
+          ) : (
+            ""
+          )}
+          {addDeleteLink ? (
+            <Link
+              href={"/files/delete/" + fileId}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 group-hover:bg-accent group-hover:text-accent-foreground"
+              prefetch={false}
+            >
+              <Trash2Icon className="h-4 w-4 text-black" />
+            </Link>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
     </div>
   );

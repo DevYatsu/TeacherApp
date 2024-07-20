@@ -6,6 +6,9 @@ import {
   getNameAndStudentsNumberFromFolderName,
 } from "@/lib/google-drive/folder";
 import { notFound } from "next/navigation";
+import Chapter from "./chapter";
+import FileDisplay from "@/components/ui/fileDisplay";
+import AddChapterButton from "./AddChapterButton";
 
 export default async function AdminClassPage({
   classroomId,
@@ -53,7 +56,37 @@ export default async function AdminClassPage({
       <Suspense>
         <AdminClassRoomHeader classroomName={name} />
       </Suspense>
-      <main className="flex flex-col items-center space-y-12 py-6 lg:py-10 xl:py-12 px-4 lg:px-8"></main>
+      <main className="flex flex-col justify-center items-center space-y-12 py-6 lg:py-10 xl:py-12 px-4 lg:px-8">
+        <div className="container">
+          <section className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold">Chapters</h2>
+              <AddChapterButton />
+            </div>
+            <div className="grid gap-4">
+              <Chapter name="Chapter 1">
+                <FileDisplay
+                  fullName="test.png"
+                  extension="PNG"
+                  sizeWithUnit="2.5 MB"
+                  fileId={""}
+                  addDownloadLink
+                  addDeleteLink
+                />
+              </Chapter>
+              <Chapter name="Chapter 2">
+                <FileDisplay
+                  fullName={"Test.pdf"}
+                  extension={"PDF"}
+                  fileId={""}
+                  addDownloadLink
+                  addDeleteLink
+                />
+              </Chapter>
+            </div>
+          </section>
+        </div>
+      </main>
     </div>
   );
 }
