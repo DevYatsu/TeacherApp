@@ -1,6 +1,9 @@
 import { Suspense, SVGProps } from "react";
 import { notFound } from "next/navigation";
-import { getFolderMetadata } from "@/lib/google-drive/folder";
+import {
+  getFolderMetadata,
+  getNameAndStudentsNumberFromFolderName,
+} from "@/lib/google-drive/folder";
 import Link from "next/link";
 import ClassRoomHeader from "./header";
 import Chapter from "./chapter";
@@ -17,6 +20,8 @@ export default async function CustomClassPage({
   if (!folderData) {
     return notFound();
   }
+
+  const { name } = getNameAndStudentsNumberFromFolderName(folderData.name!);
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
@@ -42,7 +47,7 @@ export default async function CustomClassPage({
         </div>
       </header>
       <Suspense>
-        <ClassRoomHeader classroomName={folderData.name!} />
+        <ClassRoomHeader classroomName={name} />
       </Suspense>
       <main className="flex flex-col items-center space-y-12 py-6 lg:py-10 xl:py-12 px-4 lg:px-8">
         <Chapter title="Chapter 1: Introduction to Computers">
@@ -55,21 +60,21 @@ export default async function CustomClassPage({
           />
           <FileDisplay
             fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
+            extension="ZIP"
             sizeWithUnit="1.5 MB"
             fileId={""}
             addDownloadLink
           />
           <FileDisplay
             fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
+            extension="PNG"
             sizeWithUnit="1.5 MB"
             fileId={""}
             addDownloadLink
           />{" "}
           <FileDisplay
             fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
+            extension="JSON"
             sizeWithUnit="1.5 MB"
             fileId={""}
             addDownloadLink
@@ -90,14 +95,14 @@ export default async function CustomClassPage({
           />
           <FileDisplay
             fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
+            extension="PPTX"
             sizeWithUnit="1.5 MB"
             fileId={""}
             addDownloadLink
           />{" "}
           <FileDisplay
             fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
+            extension="mp3"
             sizeWithUnit="1.5 MB"
             fileId={""}
             addDownloadLink
@@ -106,7 +111,7 @@ export default async function CustomClassPage({
         <Chapter title="Chapter 2: Test">
           <FileDisplay
             fullName="Example File.pdf"
-            extension="PDF"
+            extension="mp4"
             sizeWithUnit="2.3 MB"
             fileId={""}
             addDownloadLink

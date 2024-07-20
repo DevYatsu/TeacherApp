@@ -29,7 +29,7 @@ export default async function AdminClassPage({
         <div className="container flex items-center justify-around">
           <Link
             href="/admin/dashboard"
-            className="flex items-center gap-2 text-primary-foreground"
+            className="flex items-center gap-2 text-primary-foreground hover:text-secondary-foreground duration-300"
             prefetch={true}
           >
             <span className="text-lg font-medium">Dashboard</span>

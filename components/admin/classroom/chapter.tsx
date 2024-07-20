@@ -29,7 +29,7 @@ export default function Chapter({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Upload Files</TooltipContent>
-            </Tooltip>{" "}
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

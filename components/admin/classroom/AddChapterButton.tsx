@@ -24,7 +24,10 @@ export default function AddChapterButton() {
   return (
     <>
       <Modal open={openModal} setIsOpen={setOpenModal} />
-      <Button className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+      <Button
+        onClick={() => setOpenModal(true)}
+        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+      >
         Add Chapter
       </Button>
     </>
@@ -57,7 +60,7 @@ function Modal({
     try {
       data.name = data.name.trim();
 
-      const response = await fetch("/api/chapter", {
+      const response = await fetch("/api/chapter/create", {
         method: "POST",
         body: JSON.stringify(data),
       });
@@ -77,11 +80,7 @@ function Modal({
       setError("root.serverError", {
         type: "400",
         message:
-          error instanceof Error
-            ? error.message
-            : typeof error === "string"
-            ? error
-            : "Failed to created new chapter",
+          typeof error === "string" ? error : "Failed to created new chapter",
       });
     } finally {
       setIsLoading(false);
@@ -92,9 +91,9 @@ function Modal({
     <Dialog open={open} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Classroom</DialogTitle>
+          <DialogTitle>Create New Chapter</DialogTitle>
           <DialogDescription>
-            Enter the details for your new classroom.
+            Enter the details for your new chapter.
           </DialogDescription>
           {errors.root && (
             <span className="text-red-500 text-sm">
@@ -121,12 +120,12 @@ function Modal({
             />
           </div>
           {errors.name && (
-            <p className="text-red-500 text-sm">Classroom name is required</p>
+            <p className="text-red-500 text-sm">Chapter name is required</p>
           )}
         </form>
         <DialogFooter>
           <Button type="submit" form="add-chapter-form" disabled={isLoading}>
-            {isLoading ? "Loading..." : "Create Classroom"}
+            {isLoading ? "Loading..." : "Create Chapter"}
           </Button>
         </DialogFooter>
       </DialogContent>

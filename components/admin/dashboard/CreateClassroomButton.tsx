@@ -57,7 +57,7 @@ function CreateClassModal({
     try {
       data.name = data.name.trim();
 
-      const response = await fetch("/api/classes", {
+      const response = await fetch("/api/classroom/create", {
         method: "POST",
         body: JSON.stringify(data),
       });

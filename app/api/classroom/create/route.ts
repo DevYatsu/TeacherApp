@@ -1,4 +1,3 @@
-import { getAllFiles } from "@/lib/google-drive/files";
 import { createFolder } from "@/lib/google-drive/folder";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";

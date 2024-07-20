@@ -1,6 +1,70 @@
-import { DeleteIcon, Trash2Icon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  DownloadIcon,
+  FileArchiveIcon,
+  FileAudioIcon,
+  FileCode2Icon,
+  FileIcon,
+  FileImageIcon,
+  FileJson2Icon,
+  FileSpreadsheetIcon,
+  FileTextIcon,
+  FileVideoIcon,
+  Trash2Icon,
+} from "lucide-react";
 import Link from "next/link";
 import { SVGProps } from "react";
+
+const sharedClasses = "h-8 w-8 text-muted-foreground";
+
+const fileIcons = {
+  default: FileIcon,
+  img: FileImageIcon,
+  spreadSheet: FileSpreadsheetIcon,
+  audio: FileAudioIcon,
+  video: FileVideoIcon,
+  code: FileCode2Icon,
+  json: FileJson2Icon,
+  txt: FileTextIcon,
+  pdf: PdfIcon,
+  docx: DocxIcon,
+  pptx: PptxIcon,
+  archive: FileArchiveIcon,
+};
+
+const extensionToIconMap: { [key: string]: keyof typeof fileIcons } = {
+  csv: "spreadSheet",
+  xls: "spreadSheet",
+  xlsx: "spreadSheet",
+  jpg: "img",
+  jpeg: "img",
+  png: "img",
+  gif: "img",
+  img: "img",
+  svg: "img",
+  mp3: "audio",
+  wav: "audio",
+  mp4: "video",
+  avi: "video",
+  mov: "video",
+  js: "code",
+  jsx: "code",
+  ts: "code",
+  tsx: "code",
+  html: "code",
+  css: "code",
+  xml: "code",
+  json: "json",
+  txt: "txt",
+  pdf: "pdf",
+  docx: "docx",
+  doc: "docx",
+  pptx: "pptx",
+  zip: "archive",
+  rar: "archive",
+  tar: "archive",
+  gz: "archive",
+};
 
 export default function FileDisplay({
   fullName,
@@ -17,60 +81,33 @@ export default function FileDisplay({
   addDownloadLink?: boolean;
   addDeleteLink?: boolean;
 }) {
-  // icons found one svgrepo.com or directly from v0
-  const iconsList = {
-    default: <FileIcon className="h-8 w-8 text-muted" />,
+  const IconComponent =
+    fileIcons[extensionToIconMap[extension.toLowerCase()] || "default"];
 
-    csv: <FileSpreadsheetIcon className="h-8 w-8 text-muted" />,
-    xls: <FileSpreadsheetIcon className="h-8 w-8 text-muted" />,
-    xlsx: <FileSpreadsheetIcon className="h-8 w-8 text-muted" />,
-
-    jpg: <FileImageIcon className="h-8 w-8 text-muted" />,
-    jpeg: <FileImageIcon className="h-8 w-8 text-muted" />,
-    png: <FileImageIcon className="h-8 w-8 text-muted" />,
-    gif: <FileImageIcon className="h-8 w-8 text-muted" />,
-    img: <FileImageIcon className="h-8 w-8 text-muted" />,
-    svg: <FileImageIcon className="h-8 w-8 text-muted" />,
-
-    audio: <FileAudioIcon className="h-8 w-8 text-muted" />,
-    mp3: <FileAudioIcon className="h-8 w-8 text-muted" />,
-    wav: <FileAudioIcon className="h-8 w-8 text-muted" />,
-
-    mp4: <FileVideoIcon className="h-8 w-8 text-muted" />,
-    video: <FileVideoIcon className="h-8 w-8 text-muted" />,
-    avi: <FileVideoIcon className="h-8 w-8 text-muted" />,
-    mov: <FileVideoIcon className="h-8 w-8 text-muted" />,
-
-    js: <CodeFileIcon className="h-8 w-8 text-muted" />,
-    jsx: <CodeFileIcon className="h-8 w-8 text-muted" />,
-    ts: <CodeFileIcon className="h-8 w-8 text-muted" />,
-    tsx: <CodeFileIcon className="h-8 w-8 text-muted" />,
-    html: <CodeFileIcon className="h-8 w-8 text-muted" />,
-    css: <CodeFileIcon className="h-8 w-8 text-muted" />,
-    json: <CodeFileIcon className="h-8 w-8 text-muted" />,
-    xml: <CodeFileIcon className="h-8 w-8 text-muted" />,
-
-    txt: <TxtIcon className="h-8 w-8 text-muted" />,
-    pdf: <PdfIcon className="h-8 w-8 text-muted" />,
-    docx: <DocxIcon className="h-8 w-8 text-muted" />,
-    doc: <DocxIcon className="h-8 w-8 text-muted" />,
-    pptx: <PptxIcon className="h-8 w-8 text-muted" />,
-
-    zip: <ArchiveFileIcon className="h-8 w-8 text-muted" />,
-    rar: <ArchiveFileIcon className="h-8 w-8 text-muted" />,
-    tar: <ArchiveFileIcon className="h-8 w-8 text-muted" />,
-    gz: <ArchiveFileIcon className="h-8 w-8 text-muted" />,
-  };
+  const noFill = [
+    "img",
+    "code",
+    "json",
+    "archive",
+    "default",
+    "audio",
+    "video",
+  ].includes(extensionToIconMap[extension.toLowerCase()]);
 
   return (
     <div
-      className="group rounded-lg border bg-background p-4 transition-all"
+      className="rounded-lg border bg-background p-4 transition-all"
       data-file-id={fileId}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 pr-2">
-          {(iconsList as Record<string, any>)[extension.toLowerCase()] ??
-            iconsList["default"]}
+          <IconComponent
+            className={cn(sharedClasses, {
+              "fill-none": noFill,
+              "fill-muted-foreground": !noFill,
+              "stroke-muted-foreground": !noFill,
+            })}
+          />
           <div>
             <p className="text-sm font-medium">{fullName}</p>
             <p className="text-xs text-secondary-foreground select-none">
@@ -83,10 +120,10 @@ export default function FileDisplay({
           {addDownloadLink ? (
             <Link
               href={"/files/download/" + fileId}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 group-hover:bg-accent group-hover:text-accent-foreground"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
               prefetch={false}
             >
-              <DownloadIcon className="h-4 w-4 text-black" />
+              <DownloadIcon className="h-4 w-4" />
             </Link>
           ) : (
             ""
@@ -94,10 +131,10 @@ export default function FileDisplay({
           {addDeleteLink ? (
             <Link
               href={"/files/delete/" + fileId}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 group-hover:bg-accent group-hover:text-accent-foreground"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
               prefetch={false}
             >
-              <Trash2Icon className="h-4 w-4 text-black" />
+              <Trash2Icon className="h-4 w-4" />
             </Link>
           ) : (
             ""
@@ -117,7 +154,7 @@ function PdfIcon(props?: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="none"
-      strokeWidth="2"
+      strokeWidth="1"
       strokeLinecap="round"
       strokeLinejoin="round"
       {...props}
@@ -126,7 +163,6 @@ function PdfIcon(props?: SVGProps<SVGSVGElement>) {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V11C19 11.5523 19.4477 12 20 12C20.5523 12 21 11.5523 21 11V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM10.3078 23.5628C10.4657 23.7575 10.6952 23.9172 10.9846 23.9762C11.2556 24.0316 11.4923 23.981 11.6563 23.9212C11.9581 23.8111 12.1956 23.6035 12.3505 23.4506C12.5941 23.2105 12.8491 22.8848 13.1029 22.5169C14.2122 22.1342 15.7711 21.782 17.287 21.5602C18.1297 21.4368 18.9165 21.3603 19.5789 21.3343C19.8413 21.6432 20.08 21.9094 20.2788 22.1105C20.4032 22.2363 20.5415 22.3671 20.6768 22.4671C20.7378 22.5122 20.8519 22.592 20.999 22.6493C21.0755 22.6791 21.5781 22.871 22.0424 22.4969C22.3156 22.2768 22.5685 22.0304 22.7444 21.7525C22.9212 21.4733 23.0879 21.0471 22.9491 20.5625C22.8131 20.0881 22.4588 19.8221 22.198 19.6848C21.9319 19.5448 21.6329 19.4668 21.3586 19.4187C21.11 19.3751 20.8288 19.3478 20.5233 19.3344C19.9042 18.5615 19.1805 17.6002 18.493 16.6198C17.89 15.76 17.3278 14.904 16.891 14.1587C16.9359 13.9664 16.9734 13.7816 17.0025 13.606C17.0523 13.3052 17.0824 13.004 17.0758 12.7211C17.0695 12.4497 17.0284 12.1229 16.88 11.8177C16.7154 11.4795 16.416 11.1716 15.9682 11.051C15.5664 10.9428 15.1833 11.0239 14.8894 11.1326C14.4359 11.3004 14.1873 11.6726 14.1014 12.0361C14.0288 12.3437 14.0681 12.6407 14.1136 12.8529C14.2076 13.2915 14.4269 13.7956 14.6795 14.2893C14.702 14.3332 14.7251 14.3777 14.7487 14.4225C14.5103 15.2072 14.1578 16.1328 13.7392 17.0899C13.1256 18.4929 12.4055 19.8836 11.7853 20.878C11.3619 21.0554 10.9712 21.2584 10.6746 21.4916C10.4726 21.6505 10.2019 21.909 10.0724 22.2868C9.9132 22.7514 10.0261 23.2154 10.3078 23.5628ZM11.8757 23.0947C11.8755 23.0946 11.8775 23.0923 11.8824 23.0877C11.8783 23.0924 11.8759 23.0947 11.8757 23.0947ZM16.9974 19.5812C16.1835 19.7003 15.3445 19.8566 14.5498 20.0392C14.9041 19.3523 15.2529 18.6201 15.5716 17.8914C15.7526 17.4775 15.9269 17.0581 16.0885 16.6431C16.336 17.0175 16.5942 17.3956 16.8555 17.7681C17.2581 18.3421 17.6734 18.911 18.0759 19.4437C17.7186 19.4822 17.3567 19.5287 16.9974 19.5812ZM16.0609 12.3842C16.0608 12.3829 16.0607 12.3823 16.0606 12.3823C16.0606 12.3822 16.0607 12.3838 16.061 12.3872C16.061 12.386 16.0609 12.385 16.0609 12.3842Z"
-        fill="#000000"
       />
     </svg>
   );
@@ -137,7 +173,6 @@ function DocxIcon(props?: SVGProps<SVGSVGElement>) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      fill="#000000"
       version="1.1"
       id="Capa_1"
       width="24"
@@ -168,60 +203,11 @@ function DocxIcon(props?: SVGProps<SVGSVGElement>) {
   );
 }
 
-function ArchiveFileIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 20 20"
-      version="1.1"
-      {...props}
-    >
-      <g id="layer1">
-        <path
-          d="M 3 0 L 3 20 L 17 20 L 17 5 L 17 4 L 13 0 L 12 0 L 10 0 L 10 1 L 12 1 L 12 4 L 12 5 L 16 5 L 16 19 L 4 19 L 4 1 L 6 1 L 6 0 L 3 0 z M 8 0 L 8 1 L 9 1 L 9 0 L 8 0 z M 8 1 L 7 1 L 7 2 L 8 2 L 8 1 z M 8 2 L 8 3 L 9 3 L 9 2 L 8 2 z M 8 3 L 7 3 L 7 4 L 8 4 L 8 3 z M 8 4 L 8 5 L 9 5 L 9 4 L 8 4 z M 8 5 L 7 5 L 7 6 L 8 6 L 8 5 z M 8 6 L 8 7 L 9 7 L 9 6 L 8 6 z M 8 7 L 7 7 L 7 8 L 8 8 L 8 7 z M 8 8 L 8 9 L 9 9 L 9 8 L 8 8 z M 8 9 L 7 9 L 7 10 L 8 10 L 8 9 z M 13 1.3535156 L 15.646484 4 L 13 4 L 13 1.3535156 z M 7 11 L 6 15 L 6 18 L 10 18 L 10 15 L 9 11 L 7 11 z M 7 16 L 9 16 L 9 17 L 7 17 L 7 16 z "
-          fill="#222222"
-          fillOpacity="1"
-          stroke="none"
-          strokeWidth="0"
-        />
-      </g>
-    </svg>
-  );
-}
-
-function CodeFileIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      xmlnsXlink="http://www.w3.org/1999/xlink"
-      fill="#000000"
-      version="1.1"
-      id="Capa_1"
-      width="24"
-      height="24"
-      viewBox="0 0 31.612 31.612"
-      xmlSpace="preserve"
-    >
-      <g>
-        <g>
-          <path d="M10.871,13.671l-4.058,4.057c-0.234,0.234-0.367,0.553-0.367,0.885c0,0.333,0.133,0.65,0.367,0.885l3.923,3.924    c0.245,0.244,0.565,0.367,0.887,0.367c0.32,0,0.641-0.123,0.885-0.367c0.49-0.488,0.49-1.281,0-1.771L9.47,18.613l3.173-3.172    c0.489-0.488,0.489-1.281,0-1.77C12.152,13.182,11.36,13.182,10.871,13.671z" />
-          <path d="M18.969,15.443l3.174,3.171l-3.039,3.038c-0.488,0.488-0.488,1.281,0,1.771c0.244,0.244,0.564,0.366,0.886,0.366    s0.642-0.122,0.887-0.366l3.923-3.924c0.234-0.234,0.367-0.554,0.367-0.886c0-0.333-0.133-0.651-0.367-0.886l-4.058-4.056    c-0.489-0.489-1.281-0.489-1.771,0C18.48,14.16,18.48,14.954,18.969,15.443z" />
-          <path d="M13.265,26.844c0.081,0.023,0.162,0.037,0.245,0.037c0.356,0,0.688-0.232,0.798-0.592l4.59-14.995    c0.138-0.441-0.111-0.908-0.553-1.043c-0.443-0.135-0.906,0.113-1.043,0.554L12.71,25.799    C12.576,26.241,12.823,26.707,13.265,26.844z" />
-          <path d="M11.216,0L3.029,8.643v22.969h25.554V0H11.216z M10.495,3.635v3.83H6.867L10.495,3.635z M26.605,29.637H5.005V9.441h7.465    V1.975h14.135V29.637z" />
-        </g>
-      </g>
-    </svg>
-  );
-}
-
 function PptxIcon(props?: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      fill="#000000"
       version="1.1"
       id="Capa_1"
       width="24"
@@ -245,179 +231,6 @@ function PptxIcon(props?: SVGProps<SVGSVGElement>) {
           <rect x="325.804" y="257.35" width="108" height="16.118" />
         </g>
       </g>
-    </svg>
-  );
-}
-
-function TxtIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      xmlnsXlink="http://www.w3.org/1999/xlink"
-      fill="#000000"
-      version="1.1"
-      id="Capa_1"
-      width="24"
-      height="24"
-      viewBox="0 0 90.604 90.604"
-      xmlSpace="preserve"
-      {...props}
-    >
-      <g>
-        <g>
-          <path d="M58.596,0H12.255v90.604h66.094v-63.73L54.868,10.66L58.596,0z M35.35,38.153h-6.011v17.835h-4.998V38.153h-5.913v-4.181    H35.35V38.153z M57.132,33.972h16.922v4.181h-6.012v17.835h-4.997V38.153h-5.913V33.972z M55.6,33.972l-6.206,10.747l6.533,11.269    h-5.75l-1.993-3.984c-0.815-1.536-1.339-2.68-1.959-3.951H46.16c-0.458,1.271-1.014,2.416-1.699,3.951l-1.829,3.984h-5.684    l6.369-11.139l-6.141-10.877h5.717l1.928,4.017c0.652,1.34,1.143,2.418,1.665,3.66h0.065c0.522-1.404,0.946-2.385,1.503-3.66    l1.861-4.017H55.6z" />
-          <polygon points="63.235,0.097 60.216,8.734 78.348,21.254   " />
-        </g>
-      </g>
-    </svg>
-  );
-}
-
-function DownloadIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" x2="12" y1="15" y2="3" />
-    </svg>
-  );
-}
-
-function FileAudioIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M17.5 22h.5a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3" />
-      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-      <path d="M2 19a2 2 0 1 1 4 0v1a2 2 0 1 1-4 0v-4a6 6 0 0 1 12 0v4a2 2 0 1 1-4 0v-1a2 2 0 1 1 4 0" />
-    </svg>
-  );
-}
-
-function FileIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-    </svg>
-  );
-}
-
-function FileImageIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-      <circle cx="10" cy="12" r="2" />
-      <path d="m20 17-1.296-1.296a2.41 2.41 0 0 0-3.408 0L9 22" />
-    </svg>
-  );
-}
-
-function FileSpreadsheetIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-      <path d="M8 13h2" />
-      <path d="M14 13h2" />
-      <path d="M8 17h2" />
-      <path d="M14 17h2" />
-    </svg>
-  );
-}
-
-function FileVideoIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-      <path d="m10 11 5 3-5 3v-6Z" />
-    </svg>
-  );
-}
-
-function XIcon(props?: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
     </svg>
   );
 }
