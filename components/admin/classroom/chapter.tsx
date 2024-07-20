@@ -45,7 +45,9 @@ export default function Chapter({
           </TooltipProvider>
         </div>
       </div>
-      <div className="space-y-2">{children}</div>
+      <div className="space-y-2">
+        {children ?? "No file to display for the moment"}
+      </div>
     </div>
   );
 }
