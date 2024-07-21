@@ -17,6 +17,8 @@ export const POST = async (request: Request) => {
       return new Response("Invalid Body!", { status: 400 });
     }
 
+    revalidatePath(`/admin/classroom/${parentFolderId}`);
+    revalidatePath(`/classroom/${parentFolderId}`);
     const id = await createFolder(name, parentFolderId);
 
     if (!id) {
@@ -24,8 +26,6 @@ export const POST = async (request: Request) => {
         status: 500,
       });
     }
-    revalidatePath(`/admin/classroom/${parentFolderId}`);
-    revalidatePath(`/classroom/${parentFolderId}`);
 
     return Response.json(
       { id },

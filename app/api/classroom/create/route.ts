@@ -19,10 +19,11 @@ export const POST = async (request: Request) => {
 
     const folderName = name + (studentsNumber ? ` - ${studentsNumber}` : "");
 
+    revalidatePath("/admin/dashboard");
+
     const folderId = await createFolder(folderName);
 
     if (folderId) {
-      revalidatePath("/admin/dashboard");
       return Response.json(
         { id: folderId },
         { status: 201, headers: { "Content-Type": "application/json" } }

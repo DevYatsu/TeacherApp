@@ -28,10 +28,9 @@ export const POST = async (request: Request) => {
       return createFile(file, id);
     });
 
-    await Promise.all(createPromises);
-
     revalidatePath(`/classroom/${parentFolderId}`);
     revalidatePath(`/admin/classroom/${parentFolderId}`);
+    await Promise.all(createPromises);
 
     return new Response("Documents created!", {
       status: 201,

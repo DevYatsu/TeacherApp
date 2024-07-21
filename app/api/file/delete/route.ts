@@ -17,9 +17,9 @@ export const POST = async (request: Request) => {
       return new Response("Invalid Body!", { status: 400 });
     }
 
-    await deleteFile(id);
     revalidatePath(`/classroom/${id}`);
     revalidatePath(`/admin/classroom/${id}`);
+    await deleteFile(id);
 
     return new Response(`Classroom '${id}' deleted successfully!`, {
       status: 200,

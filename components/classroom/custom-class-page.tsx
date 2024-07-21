@@ -59,6 +59,10 @@ export default async function CustomClassPage({
           {chaptersData.map(async (chapter) => {
             const files = (await getFilesInFolder(chapter.id!)).reverse();
 
+            if (files.length === 0) {
+              return;
+            }
+
             return (
               <Chapter title={chapter.name!} key={chapter.id}>
                 {files.length === 0

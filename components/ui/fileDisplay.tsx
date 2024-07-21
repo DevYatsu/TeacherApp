@@ -63,8 +63,7 @@ const extensionToIconMap: { [key: string]: keyof typeof fileIcons } = {
   docx: "docx",
   doc: "docx",
   pptx: "pptx",
-  zip: "archive",
-  rar: "archive",
+  zip: "archive", rar: "archive",
   tar: "archive",
   gz: "archive",
 };
@@ -89,7 +88,7 @@ export default function FileDisplay({
   const genericType = extensionToIconMap[extension.toLowerCase()] || "default";
   const IconComponent = fileIcons[genericType];
 
-  const noFill = ["img", "code", "json", "archive", "audio", "video"].includes(
+  const noFill = ["code", "archive", "video", "default"].includes(
     extensionToIconMap[genericType]
   );
 
@@ -126,8 +125,7 @@ export default function FileDisplay({
       <div className="flex items-center h-full gap-3 pr-2">
         <IconComponent
           className={cn(sharedClasses, {
-            "fill-none": noFill,
-            "fill-muted-foreground": !noFill,
+            "fill-muted-foreground": noFill,
             "stroke-muted-foreground": !noFill,
           })}
         />
