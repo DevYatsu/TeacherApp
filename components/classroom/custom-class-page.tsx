@@ -11,6 +11,7 @@ import ClassRoomHeader from "./header";
 import Chapter from "./chapter";
 import FileDisplay from "../ui/fileDisplay";
 import { HomeIcon } from "lucide-react";
+import { formatFileSize } from "@/lib/utils";
 
 export default async function CustomClassPage({
   classroomId,
@@ -72,7 +73,7 @@ export default async function CustomClassPage({
                         <FileDisplay
                           fullName={file.name!}
                           extension={file.fullFileExtension!}
-                          sizeWithUnit={file.size!}
+                          sizeInBytes={file.size}
                           fileId={file.id!}
                           addDownloadButton
                           key={file.id}

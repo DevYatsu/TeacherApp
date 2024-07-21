@@ -84,13 +84,13 @@ export default async function AdminClassPage({
                         ? "No file to display for the moment, the chapter does not appear for the students"
                         : files.map((file) => (
                             <FileDisplay
-                              fullName={file.name!}
-                              extension={file.fullFileExtension!}
-                              sizeWithUnit={file.size!}
-                              fileId={file.id!}
+                              fullName={file.name}
+                              extension={file.fullFileExtension}
+                              sizeInBytes={file.size}
+                              fileId={file.id}
+                              key={file.id}
                               addDownloadButton
                               addDeleteButton
-                              key={file.id}
                             />
                           ))}
                     </AdminChapter>

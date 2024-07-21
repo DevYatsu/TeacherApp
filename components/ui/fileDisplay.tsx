@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn, formatFileSize } from "@/lib/utils";
 import {
   DownloadIcon,
   FileArchiveIcon,
@@ -14,9 +14,10 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import Link from "next/link";
-import { SVGProps } from "react";
+import { SVGProps, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { Button } from "./button";
 
 const sharedClasses = "h-8 w-8 text-muted-foreground";
 
@@ -39,17 +40,61 @@ const extensionToIconMap: { [key: string]: keyof typeof fileIcons } = {
   csv: "spreadSheet",
   xls: "spreadSheet",
   xlsx: "spreadSheet",
+  ods: "spreadSheet",
+  tsv: "spreadSheet",
+  xlsm: "spreadSheet",
+  xlw: "spreadSheet",
+  xltx: "spreadSheet",
+  xlt: "spreadSheet",
+  fods: "spreadSheet",
+  ots: "spreadSheet",
+
   jpg: "img",
   jpeg: "img",
   png: "img",
+  tiff: "img",
   gif: "img",
   img: "img",
   svg: "img",
+  bmp: "img",
+  webp: "img",
+  ico: "img",
+  heic: "img",
+  heif: "img",
+  raw: "img",
+  psd: "img",
+  ai: "img",
+  eps: "img",
+
   mp3: "audio",
   wav: "audio",
+  aac: "audio",
+  flac: "audio",
+  ogg: "audio",
+  m4a: "audio",
+  wma: "audio",
+  aiff: "audio",
+  alac: "audio",
+  opus: "audio",
+  amr: "audio",
+
   mp4: "video",
   avi: "video",
   mov: "video",
+  mkv: "video",
+  flv: "video",
+  wmv: "video",
+  webm: "video",
+  mpg: "video",
+  mpeg: "video",
+  "3gp": "video",
+  "3g2": "video",
+  m4v: "video",
+  mxf: "video",
+  vob: "video",
+  ogv: "video",
+  mts: "video",
+
   js: "code",
   jsx: "code",
   ts: "code",
@@ -57,22 +102,115 @@ const extensionToIconMap: { [key: string]: keyof typeof fileIcons } = {
   html: "code",
   css: "code",
   xml: "code",
+  java: "code",
+  py: "code",
+  rb: "code",
+  php: "code",
+  c: "code",
+  cpp: "code",
+  cs: "code",
+  sh: "code",
+  bat: "code",
+  go: "code",
+  rs: "code",
+  kt: "code",
+  swift: "code",
+  sql: "code",
+  r: "code",
+  pl: "code",
+  m: "code",
+  lua: "code",
+  md: "code",
+  asp: "code",
+  aspx: "code",
+  vb: "code",
+  vbs: "code",
+  jsp: "code",
+  coffee: "code",
+  scss: "code",
+  sass: "code",
+  less: "code",
+  h: "code",
+  hpp: "code",
+  ino: "code",
+  gradle: "code",
+  groovy: "code",
+  dart: "code",
+  erl: "code",
+  ex: "code",
+  exs: "code",
+  elm: "code",
+  fs: "code",
+  fsharp: "code",
+  hs: "code",
+  lhs: "code",
+  jl: "code",
+  ktm: "code",
+  lisp: "code",
+  clj: "code",
+  cljs: "code",
+  cljc: "code",
+  ml: "code",
+  mli: "code",
+  mly: "code",
+  mll: "code",
+  nix: "code",
+  pas: "code",
+  pp: "code",
+  purs: "code",
+  rbw: "code",
+  erb: "code",
+  rsx: "code",
+  scala: "code",
+  sol: "code",
+  soy: "code",
+  vue: "code",
+  yaml: "code",
+  yml: "code",
+  pkl: "code",
+
   json: "json",
   txt: "txt",
   pdf: "pdf",
   docx: "docx",
   doc: "docx",
   pptx: "pptx",
+
   zip: "archive",
   rar: "archive",
   tar: "archive",
   gz: "archive",
+  "tar.gz": "archive",
+  "7z": "archive",
+  bz2: "archive",
+  "tar.bz2": "archive",
+  xz: "archive",
+  "tar.xz": "archive",
+  lz: "archive",
+  "tar.lz": "archive",
+  lzma: "archive",
+  "tar.lzma": "archive",
+  z: "archive",
+  "tar.z": "archive",
+  iso: "archive",
+  cab: "archive",
+  arj: "archive",
+  ace: "archive",
+  uue: "archive",
+  gzip: "archive",
+  wim: "archive",
+  xar: "archive",
+  dmg: "archive",
+  tgz: "archive",
+  taz: "archive",
+  cpio: "archive",
 };
 
 export default function FileDisplay({
   fullName,
   extension,
   sizeWithUnit,
+  sizeInBytes,
   fileId,
   addDeleteButton,
   addDownloadButton,
@@ -80,6 +218,7 @@ export default function FileDisplay({
   fullName: string;
   extension: string;
   sizeWithUnit?: string;
+  sizeInBytes?: string;
   fileId: string;
   addDownloadButton?: boolean;
   addDeleteButton?: boolean;
@@ -88,12 +227,14 @@ export default function FileDisplay({
 
   const genericType = extensionToIconMap[extension.toLowerCase()] || "default";
   const IconComponent = fileIcons[genericType];
+  const [isDeleteClickable, setIsDeleteClickable] = useState(true);
 
   const noFill = ["code", "archive", "video", "default"].includes(
     extensionToIconMap[genericType]
   );
 
   const handleDelete = async () => {
+    setIsDeleteClickable(false);
     const requestHandler = async () => {
       try {
         const resp = await fetch(`/api/file/delete`, {
@@ -121,6 +262,12 @@ export default function FileDisplay({
     router.refresh();
   };
 
+  const size = sizeWithUnit
+    ? sizeWithUnit
+    : sizeInBytes
+    ? formatFileSize(sizeInBytes)
+    : undefined;
+
   return (
     <div className="rounded-lg border bg-background p-4 transition-all flex items-center justify-between">
       <div className="flex items-center h-full gap-3 pr-2">
@@ -133,7 +280,7 @@ export default function FileDisplay({
         <div>
           <p className="text-sm font-medium">{fullName}</p>
           <p className="text-xs text-secondary-foreground select-none">
-            {extension.toUpperCase()} {sizeWithUnit ? ", " + sizeWithUnit : ""}
+            {extension.toUpperCase()} {size ? `, ${size}` : ""}
           </p>
         </div>
       </div>
@@ -150,12 +297,14 @@ export default function FileDisplay({
           ""
         )}
         {addDeleteButton ? (
-          <div
+          <Button
+            disabled={!isDeleteClickable}
             onClick={handleDelete}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+            className="relative h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
           >
-            <Trash2Icon className="h-4 w-4" />
-          </div>
+            <Trash2Icon className="h-4 w-4 absolute" />
+            <span className="sr-only">Delete FIle</span>
+          </Button>
         ) : (
           ""
         )}
