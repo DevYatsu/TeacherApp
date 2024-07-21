@@ -1,5 +1,5 @@
 import authOptions from "@/lib/authOptions";
-import { deleteFolder } from "@/lib/google-drive/folder";
+import { deleteFile } from "@/lib/google-drive/files";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 
@@ -17,10 +17,9 @@ export const POST = async (request: Request) => {
       return new Response("Invalid Body!", { status: 400 });
     }
 
-    await deleteFolder(id);
+    await deleteFile(id);
     revalidatePath(`/classroom/${id}`);
     revalidatePath(`/admin/classroom/${id}`);
-    revalidatePath("/admin/dashboard");
 
     return new Response(`Classroom '${id}' deleted successfully!`, {
       status: 200,

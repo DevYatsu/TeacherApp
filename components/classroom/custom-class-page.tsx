@@ -1,7 +1,9 @@
 import { Suspense, SVGProps } from "react";
 import { notFound } from "next/navigation";
 import {
+  getFilesInFolder,
   getFolderMetadata,
+  getFoldersInFolder,
   getNameAndStudentsNumberFromFolderName,
 } from "@/lib/google-drive/folder";
 import Link from "next/link";
@@ -22,6 +24,9 @@ export default async function CustomClassPage({
   }
 
   const { name } = getNameAndStudentsNumberFromFolderName(folderData.name!);
+
+  // reverse to display oldest first
+  const chaptersData = (await getFoldersInFolder(classroomId)).reverse();
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
@@ -49,181 +54,29 @@ export default async function CustomClassPage({
       <Suspense>
         <ClassRoomHeader classroomName={name} />
       </Suspense>
-      <main className="flex flex-col items-center space-y-12 py-6 lg:py-10 xl:py-12 px-4 lg:px-8">
-        <Chapter title="Chapter 1: Introduction to Computers">
-          <FileDisplay
-            fullName="Example File.pdf"
-            extension="PDF"
-            sizeWithUnit="2.3 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="ZIP"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="PNG"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />{" "}
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="JSON"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Example File.pdf"
-            extension="PDF"
-            sizeWithUnit="2.3 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="PPTX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />{" "}
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="mp3"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-        </Chapter>{" "}
-        <Chapter title="Chapter 2: Test">
-          <FileDisplay
-            fullName="Example File.pdf"
-            extension="mp4"
-            sizeWithUnit="2.3 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />{" "}
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Example File.pdf"
-            extension="PDF"
-            sizeWithUnit="2.3 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />{" "}
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-        </Chapter>{" "}
-        <Chapter title="Chapter 3: Other Test">
-          <FileDisplay
-            fullName="Example File.pdf"
-            extension="PDF"
-            sizeWithUnit="2.3 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />{" "}
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Example File.pdf"
-            extension="PDF"
-            sizeWithUnit="2.3 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />{" "}
-          <FileDisplay
-            fullName="Another efdfdfjkldhfdjfhdfjlfd.docx"
-            extension="DOCX"
-            sizeWithUnit="1.5 MB"
-            fileId={""}
-            addDownloadLink
-          />
-        </Chapter>
+      <main className="flex items-center justify-center py-6 lg:py-10 xl:py-12 px-4 lg:px-8">
+        <div className="container space-y-12">
+          {chaptersData.map(async (chapter) => {
+            const files = (await getFilesInFolder(chapter.id!)).reverse();
+
+            return (
+              <Chapter title={chapter.name!} key={chapter.id}>
+                {files.length === 0
+                  ? "No file to display for the moment, the chapter does not appear for the students"
+                  : files.map((file) => (
+                      <FileDisplay
+                        fullName={file.name!}
+                        extension={file.fullFileExtension!}
+                        sizeWithUnit={file.size!}
+                        fileId={file.id!}
+                        addDownloadButton
+                        key={file.id}
+                      />
+                    ))}
+              </Chapter>
+            );
+          })}
+        </div>{" "}
       </main>
     </div>
   );

@@ -18,12 +18,12 @@ type AddChapterFormInputs = {
   name: string;
 };
 
-export default function AddChapterButton() {
+export default function AddChapterButton({ folderId }: { folderId: string }) {
   const [openModal, setOpenModal] = useState(false);
 
   return (
     <>
-      <Modal open={openModal} setIsOpen={setOpenModal} />
+      <Modal open={openModal} setIsOpen={setOpenModal} folderId={folderId} />
       <Button
         onClick={() => setOpenModal(true)}
         className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
@@ -37,9 +37,11 @@ export default function AddChapterButton() {
 function Modal({
   open,
   setIsOpen,
+  folderId: parentFolderId,
 }: {
   open: boolean;
   setIsOpen: (newState: boolean) => void;
+  folderId: string;
 }) {
   const {
     register,
@@ -62,14 +64,16 @@ function Modal({
 
       const response = await fetch("/api/chapter/create", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify({ parentFolderId, ...data }),
       });
-      const result = await response.text();
+      const result = await response.json();
+
+      // on success result.data.id is the id of the newly created file
 
       if (!response.ok) {
         setError("root.serverError", {
           type: "400",
-          message: result ?? "Failed to created new class",
+          message: result ?? "Failed to created new chapter",
         });
       } else {
         setIsOpen(false);

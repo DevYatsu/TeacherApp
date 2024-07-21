@@ -9,7 +9,9 @@ import { RefAttributes } from "react";
 
 export default async function ClassesSection() {
   const folders = await getAllFoldersNotInAnotherDir();
-  const foldersData = getBasicFolderData(folders);
+
+  // reverse to display oldest first
+  const foldersData = getBasicFolderData(folders).reverse();
 
   return (
     <div className="container">
@@ -20,7 +22,6 @@ export default async function ClassesSection() {
               title={classroom.name}
               studentsNumber={classroom.studentsNumber}
               key={classroom.id}
-              data-folder-id={classroom.id}
               folderId={classroom.id}
             />
           );

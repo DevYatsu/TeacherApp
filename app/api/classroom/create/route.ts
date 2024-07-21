@@ -1,26 +1,39 @@
+import authOptions from "@/lib/authOptions";
 import { createFolder } from "@/lib/google-drive/folder";
+import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
-import { NextResponse } from "next/server";
-
-export const GET = async (request: Request) => {};
 
 export const POST = async (request: Request) => {
-  const result = await request.json();
+  const session = await getServerSession(authOptions);
 
-  if (typeof result.name === "string") {
-    const folderName =
-      result.name +
-      (result.studentsNumber ? " - " + result.studentsNumber : "");
+  if (!session) {
+    return new Response("Unauthorized", { status: 403 });
+  }
+
+  try {
+    const { name, studentsNumber } = await request.json();
+
+    if (typeof name !== "string" || typeof studentsNumber !== "string") {
+      return new Response("Invalid body!", { status: 400 });
+    }
+
+    const folderName = name + (studentsNumber ? ` - ${studentsNumber}` : "");
 
     const folderId = await createFolder(folderName);
 
     if (folderId) {
       revalidatePath("/admin/dashboard");
-      return NextResponse.json({ folderId });
+      return Response.json(
+        { id: folderId },
+        { status: 201, headers: { "Content-Type": "application/json" } }
+      );
     }
-  }
 
-  return new NextResponse("Failed to create a new classroom drive", {
-    status: 400,
-  });
+    return new Response("Failed to create a new classroom", {
+      status: 500,
+    });
+  } catch (error: any) {
+    console.error("Error creating classroom:", error);
+    return new Response("Internal Server Error", { status: 500 });
+  }
 };

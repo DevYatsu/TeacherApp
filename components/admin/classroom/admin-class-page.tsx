@@ -2,11 +2,13 @@ import Link from "next/link";
 import { Suspense } from "react";
 import AdminClassRoomHeader from "./header";
 import {
+  getFilesInFolder,
   getFolderMetadata,
+  getFoldersInFolder,
   getNameAndStudentsNumberFromFolderName,
 } from "@/lib/google-drive/folder";
 import { notFound } from "next/navigation";
-import Chapter from "./chapter";
+import AdminChapter from "./chapter";
 import FileDisplay from "@/components/ui/fileDisplay";
 import AddChapterButton from "./AddChapterButton";
 
@@ -22,6 +24,9 @@ export default async function AdminClassPage({
   }
 
   const { name } = getNameAndStudentsNumberFromFolderName(folderData.name!);
+
+  // reverse to display oldest first
+  const chaptersData = (await getFoldersInFolder(classroomId)).reverse();
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
@@ -61,28 +66,35 @@ export default async function AdminClassPage({
           <section className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold">Chapters</h2>
-              <AddChapterButton />
+              <AddChapterButton folderId={classroomId} />
             </div>
             <div className="grid gap-4">
-              <Chapter name="Chapter 1">
-                <FileDisplay
-                  fullName="test.png"
-                  extension="PNG"
-                  sizeWithUnit="2.5 MB"
-                  fileId={""}
-                  addDownloadLink
-                  addDeleteLink
-                />
-              </Chapter>
-              <Chapter name="Chapter 2">
-                <FileDisplay
-                  fullName={"Test.pdf"}
-                  extension={"PDF"}
-                  fileId={""}
-                  addDownloadLink
-                  addDeleteLink
-                />
-              </Chapter>
+              {chaptersData.map(async (chapter) => {
+                const files = (await getFilesInFolder(chapter.id!)).reverse();
+
+                return (
+                  <AdminChapter
+                    name={chapter.name!}
+                    key={chapter.id}
+                    id={chapter.id!}
+                    parentFolderId={classroomId}
+                  >
+                    {files.length === 0
+                      ? "No file to display for the moment, the chapter does not appear for the students"
+                      : files.map((file) => (
+                          <FileDisplay
+                            fullName={file.name!}
+                            extension={file.fullFileExtension!}
+                            sizeWithUnit={file.size!}
+                            fileId={file.id!}
+                            addDownloadButton
+                            addDeleteButton
+                            key={file.id}
+                          />
+                        ))}
+                  </AdminChapter>
+                );
+              })}
             </div>
           </section>
         </div>

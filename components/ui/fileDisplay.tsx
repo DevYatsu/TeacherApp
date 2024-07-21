@@ -1,10 +1,11 @@
+"use client";
 import { cn } from "@/lib/utils";
 import {
   DownloadIcon,
   FileArchiveIcon,
   FileAudioIcon,
   FileCode2Icon,
-  FileIcon,
+  File,
   FileImageIcon,
   FileJson2Icon,
   FileSpreadsheetIcon,
@@ -14,11 +15,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { SVGProps } from "react";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const sharedClasses = "h-8 w-8 text-muted-foreground";
 
 const fileIcons = {
-  default: FileIcon,
+  default: File,
   img: FileImageIcon,
   spreadSheet: FileSpreadsheetIcon,
   audio: FileAudioIcon,
@@ -71,75 +74,92 @@ export default function FileDisplay({
   extension,
   sizeWithUnit,
   fileId,
-  addDeleteLink,
-  addDownloadLink,
+  addDeleteButton,
+  addDownloadButton,
 }: {
   fullName: string;
   extension: string;
   sizeWithUnit?: string;
   fileId: string;
-  addDownloadLink?: boolean;
-  addDeleteLink?: boolean;
+  addDownloadButton?: boolean;
+  addDeleteButton?: boolean;
 }) {
-  const IconComponent =
-    fileIcons[extensionToIconMap[extension.toLowerCase()] || "default"];
+  const router = useRouter();
 
-  const noFill = [
-    "img",
-    "code",
-    "json",
-    "archive",
-    "default",
-    "audio",
-    "video",
-  ].includes(extensionToIconMap[extension.toLowerCase()]);
+  const genericType = extensionToIconMap[extension.toLowerCase()] || "default";
+  const IconComponent = fileIcons[genericType];
+
+  const noFill = ["img", "code", "json", "archive", "audio", "video"].includes(
+    extensionToIconMap[genericType]
+  );
+
+  const handleDelete = async () => {
+    const requestHandler = async () => {
+      try {
+        const resp = await fetch(`/api/file/delete`, {
+          method: "POST",
+          body: JSON.stringify({ id: fileId }),
+        });
+
+        if (!resp.ok) {
+          throw new Error(await resp.text());
+        }
+
+        return resp;
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        throw error; // Re-throw the error after logging it
+      }
+    };
+
+    await toast.promise(requestHandler(), {
+      loading: "Uploading...",
+      success: <b>Chapter deleted!</b>,
+      error: <b>Uh Oh, an error occurred.</b>,
+    });
+
+    router.refresh();
+  };
 
   return (
-    <div
-      className="rounded-lg border bg-background p-4 transition-all"
-      data-file-id={fileId}
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 pr-2">
-          <IconComponent
-            className={cn(sharedClasses, {
-              "fill-none": noFill,
-              "fill-muted-foreground": !noFill,
-              "stroke-muted-foreground": !noFill,
-            })}
-          />
-          <div>
-            <p className="text-sm font-medium">{fullName}</p>
-            <p className="text-xs text-secondary-foreground select-none">
-              {extension.toUpperCase()}{" "}
-              {sizeWithUnit ? ", " + sizeWithUnit : ""}
-            </p>
+    <div className="rounded-lg border bg-background p-4 transition-all flex items-center justify-between">
+      <div className="flex items-center h-full gap-3 pr-2">
+        <IconComponent
+          className={cn(sharedClasses, {
+            "fill-none": noFill,
+            "fill-muted-foreground": !noFill,
+            "stroke-muted-foreground": !noFill,
+          })}
+        />
+        <div>
+          <p className="text-sm font-medium">{fullName}</p>
+          <p className="text-xs text-secondary-foreground select-none">
+            {extension.toUpperCase()} {sizeWithUnit ? ", " + sizeWithUnit : ""}
+          </p>
+        </div>
+      </div>
+      <div className="space-x-4">
+        {addDownloadButton ? (
+          <Link
+            href={`https://drive.google.com/uc?export=download&id=${fileId}`}
+            prefetch={false}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+          >
+            <DownloadIcon className="h-4 w-4" />
+          </Link>
+        ) : (
+          ""
+        )}
+        {addDeleteButton ? (
+          <div
+            onClick={handleDelete}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+          >
+            <Trash2Icon className="h-4 w-4" />
           </div>
-        </div>
-        <div className="space-x-4">
-          {addDownloadLink ? (
-            <Link
-              href={"/files/download/" + fileId}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-              prefetch={false}
-            >
-              <DownloadIcon className="h-4 w-4" />
-            </Link>
-          ) : (
-            ""
-          )}
-          {addDeleteLink ? (
-            <Link
-              href={"/files/delete/" + fileId}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors duration-500 hover:shadow-lg hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-              prefetch={false}
-            >
-              <Trash2Icon className="h-4 w-4" />
-            </Link>
-          ) : (
-            ""
-          )}
-        </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
