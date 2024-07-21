@@ -63,7 +63,8 @@ const extensionToIconMap: { [key: string]: keyof typeof fileIcons } = {
   docx: "docx",
   doc: "docx",
   pptx: "pptx",
-  zip: "archive", rar: "archive",
+  zip: "archive",
+  rar: "archive",
   tar: "archive",
   gz: "archive",
 };
@@ -136,7 +137,7 @@ export default function FileDisplay({
           </p>
         </div>
       </div>
-      <div className="space-x-4">
+      <div className="flex flex-col items-center sm:flex-row gap-2 sm:gap-4">
         {addDownloadButton ? (
           <Link
             href={`https://drive.google.com/uc?export=download&id=${fileId}`}

@@ -108,7 +108,6 @@ export default function AdminChapter({
       });
 
       router.refresh();
-    } catch (error) {
     } finally {
       setDeleteClickable(true);
     }

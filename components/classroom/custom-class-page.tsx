@@ -56,30 +56,34 @@ export default async function CustomClassPage({
       </Suspense>
       <main className="flex items-center justify-center py-6 lg:py-10 xl:py-12 px-4 lg:px-8">
         <div className="container space-y-12">
-          {chaptersData.map(async (chapter) => {
-            const files = (await getFilesInFolder(chapter.id!)).reverse();
+          {chaptersData.length !== 0 ? (
+            chaptersData.map(async (chapter) => {
+              const files = (await getFilesInFolder(chapter.id!)).reverse();
 
-            if (files.length === 0) {
-              return;
-            }
+              if (files.length === 0) {
+                return;
+              }
 
-            return (
-              <Chapter title={chapter.name!} key={chapter.id}>
-                {files.length === 0
-                  ? "No file to display for the moment, the chapter does not appear for the students"
-                  : files.map((file) => (
-                      <FileDisplay
-                        fullName={file.name!}
-                        extension={file.fullFileExtension!}
-                        sizeWithUnit={file.size!}
-                        fileId={file.id!}
-                        addDownloadButton
-                        key={file.id}
-                      />
-                    ))}
-              </Chapter>
-            );
-          })}
+              return (
+                <Chapter title={chapter.name!} key={chapter.id}>
+                  {files.length === 0
+                    ? "No file to display for the moment, the chapter does not appear for the students"
+                    : files.map((file) => (
+                        <FileDisplay
+                          fullName={file.name!}
+                          extension={file.fullFileExtension!}
+                          sizeWithUnit={file.size!}
+                          fileId={file.id!}
+                          addDownloadButton
+                          key={file.id}
+                        />
+                      ))}
+                </Chapter>
+              );
+            })
+          ) : (
+            <p className="text-center">No file uploaded yet!</p>
+          )}
         </div>{" "}
       </main>
     </div>

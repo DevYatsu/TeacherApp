@@ -69,32 +69,36 @@ export default async function AdminClassPage({
               <AddChapterButton folderId={classroomId} />
             </div>
             <div className="grid gap-4">
-              {chaptersData.map(async (chapter) => {
-                const files = (await getFilesInFolder(chapter.id!)).reverse();
+              {chaptersData.length !== 0 ? (
+                chaptersData.map(async (chapter) => {
+                  const files = (await getFilesInFolder(chapter.id!)).reverse();
 
-                return (
-                  <AdminChapter
-                    name={chapter.name!}
-                    key={chapter.id}
-                    id={chapter.id!}
-                    parentFolderId={classroomId}
-                  >
-                    {files.length === 0
-                      ? "No file to display for the moment, the chapter does not appear for the students"
-                      : files.map((file) => (
-                          <FileDisplay
-                            fullName={file.name!}
-                            extension={file.fullFileExtension!}
-                            sizeWithUnit={file.size!}
-                            fileId={file.id!}
-                            addDownloadButton
-                            addDeleteButton
-                            key={file.id}
-                          />
-                        ))}
-                  </AdminChapter>
-                );
-              })}
+                  return (
+                    <AdminChapter
+                      name={chapter.name!}
+                      key={chapter.id}
+                      id={chapter.id!}
+                      parentFolderId={classroomId}
+                    >
+                      {files.length === 0
+                        ? "No file to display for the moment, the chapter does not appear for the students"
+                        : files.map((file) => (
+                            <FileDisplay
+                              fullName={file.name!}
+                              extension={file.fullFileExtension!}
+                              sizeWithUnit={file.size!}
+                              fileId={file.id!}
+                              addDownloadButton
+                              addDeleteButton
+                              key={file.id}
+                            />
+                          ))}
+                    </AdminChapter>
+                  );
+                })
+              ) : (
+                <p className="text-center">Create a chapter and get started!</p>
+              )}
             </div>
           </section>
         </div>

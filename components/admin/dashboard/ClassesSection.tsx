@@ -6,6 +6,9 @@ import {
 import Link from "next/link";
 import CreateClassroomButton from "./CreateClassroomButton";
 import { RefAttributes } from "react";
+import { Button } from "@/components/ui/button";
+import { TrashIcon } from "lucide-react";
+import DeleteClassButton from "./DeleteClassButton";
 
 export default async function ClassesSection() {
   const folders = await getAllFoldersNotInAnotherDir();
@@ -47,8 +50,9 @@ function ClassCard({
 } & RefAttributes<HTMLDivElement>) {
   return (
     <Card {...props}>
-      <CardHeader>
+      <CardHeader className="relative">
         <CardTitle>{title}</CardTitle>
+        <DeleteClassButton id={folderId} />
       </CardHeader>
       <CardContent className="grid gap-2">
         <div className="flex items-center justify-between">

@@ -4,7 +4,7 @@ import { LogOutIcon } from "lucide-react";
 
 export default function LogoutLink() {
   return (
-    <Button variant="ghost" size="icon" className="ml-auto">
+    <Button variant="ghost" size="icon" className="ml-auto mr-2">
       <Link href="/admin/logout" className="w-5 h-5">
         <LogOutIcon className="w-5 h-5" aria-label="logout link" />
       </Link>
